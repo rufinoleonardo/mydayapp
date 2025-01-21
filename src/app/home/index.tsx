@@ -1,26 +1,39 @@
+import { ListItem } from "@/components/ListItem";
 import * as tasksSchema from "@/database/schemas/taskSchema";
+import { TaskProps } from "@/types/TaskProps";
+import { useNewTaskViewModel } from "@/viewmodels/NewTaskViewModel";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { Link } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { useEffect } from "react";
-import { StatusBar, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { globalStyles, textStyles } from "../../styles/globalStyles";
 
 const Home: React.FC = () => {
+  const { getAllTasks } = useNewTaskViewModel();
   const dbInstance = useSQLiteContext();
   const db = drizzle(dbInstance, { schema: tasksSchema });
+  const [tasks, setTasks] = useState<TaskProps[]>([]);
 
   useEffect(() => {
-    fetchTasks();
+    fetchData();
   }, []);
 
-  async function fetchTasks() {
-    try {
-      const response = await db.query.tasks.findMany();
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
+  async function fetchData() {
+    const response = await getAllTasks();
+    let list = response.data;
+    setTasks((tasks) => [...tasks, ...list]);
+  }
+
+  function renderData({ item }: ListRenderItemInfo<TaskProps>) {
+    return (
+      <ListItem
+        description={item.description}
+        isMistake={item.isMistake}
+        priority={item.priority}
+        observation={item.observation}
+      />
+    );
   }
 
   return (
@@ -29,9 +42,14 @@ const Home: React.FC = () => {
         Home page
       </Text>
       <Link href={"/newtask"} style={[textStyles.textLight]}>
-        Criar tarfa
+        Criar tarefa
       </Link>
-      <StatusBar barStyle={"light-content"} />
+
+      <FlatList
+        data={tasks}
+        renderItem={renderData}
+        keyExtractor={(item) => (item.id ? item.id.toString() : "no-id")}
+      />
     </View>
   );
 };

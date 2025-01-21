@@ -4,7 +4,7 @@ import { TaskProps } from "../types/TaskProps";
 export class TaskModel implements TaskProps {
   description: string;
   isMistake: boolean;
-  observation?: string | undefined;
+  observation: string;
   priority: TaskPriority;
   createdAt: Date;
 
@@ -17,6 +17,6 @@ export class TaskModel implements TaskProps {
     (this.description = description), (this.priority = priority);
     this.isMistake = isMistake;
     this.createdAt = new Date();
-    this.observation = observation || undefined;
+    this.observation = observation || "";
   }
 }

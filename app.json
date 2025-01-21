@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.lnrufino.myday"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"

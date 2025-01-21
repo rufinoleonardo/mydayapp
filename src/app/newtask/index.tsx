@@ -1,6 +1,8 @@
+import { useNewTaskViewModel } from "@/viewmodels/NewTaskViewModel";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Keyboard, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../components/Button";
 import { Checkbox } from "../../components/CheckBox";
 import { SelectInput } from "../../components/SelectInput";
@@ -17,6 +19,8 @@ type FormData = {
 };
 
 const NewTaskScreen: React.FC = () => {
+  const router = useRouter();
+  const { createTask } = useNewTaskViewModel();
   const [isMistakeChecked, setIsMistakeChecked] = useState(false);
   const { control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
@@ -28,9 +32,8 @@ const NewTaskScreen: React.FC = () => {
   });
 
   const handleSave: SubmitHandler<FormData> = (data) => {
-    console.log("Dados do Formulário: ", data);
-    Keyboard.dismiss();
-    reset();
+    createTask(data);
+    router.back();
   };
 
   return (
