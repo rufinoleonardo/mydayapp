@@ -1,0 +1,7 @@
+export enum Sizes {
+  BORDER_RADIUS_SM = 4,
+  BORDER_RADIUS_MD = 8,
+  BUTTON_PADDING = 8,
+  MARGIN_BETWEEN_SM = 8,
+  PRESSABLE_HEIGHT = 48,
+}

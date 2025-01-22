@@ -1,5 +1,4 @@
 import { useNewTaskViewModel } from "@/viewmodels/NewTaskViewModel";
-import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
@@ -19,8 +18,7 @@ type FormData = {
 };
 
 const NewTaskScreen: React.FC = () => {
-  const router = useRouter();
-  const { createTask } = useNewTaskViewModel();
+  const { addTask } = useNewTaskViewModel();
   const [isMistakeChecked, setIsMistakeChecked] = useState(false);
   const { control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
@@ -32,8 +30,7 @@ const NewTaskScreen: React.FC = () => {
   });
 
   const handleSave: SubmitHandler<FormData> = (data) => {
-    createTask(data);
-    router.back();
+    addTask(data);
   };
 
   return (

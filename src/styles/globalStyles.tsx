@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "./globalColors";
+import { Sizes } from "./globalSizes";
 
 export const globalStyles = StyleSheet.create({
   pageContainer: {
@@ -58,5 +59,18 @@ export const CommonInputStyles = StyleSheet.create({
   },
   container: {
     marginBottom: 8,
+  },
+});
+
+export const gButtonsStyles = StyleSheet.create({
+  successLg: {
+    width: "100%",
+    backgroundColor: Colors.GREEN_MEDIUM,
+    padding: Sizes.BUTTON_PADDING,
+    borderRadius: Sizes.BORDER_RADIUS_MD,
+    alignItems: "center",
+    justifyContent: "center",
+    height: Sizes.PRESSABLE_HEIGHT,
+    textAlign: "center",
   },
 });
