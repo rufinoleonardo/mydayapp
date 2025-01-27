@@ -19,10 +19,14 @@ export const ListItem: React.FC<ListItemProps> = ({
   priority,
   isMistake,
   observation,
+  createdAt,
   longPressDelete,
 }) => {
   return (
     <Pressable style={styles.container}>
+      <Text style={{ fontSize: 10, alignSelf: "flex-end" }}>
+        {createdAt?.toISOString().split("T")[0]}
+      </Text>
       <Text style={[textStyles.p_paragraph, styles.text]}>{description}</Text>
 
       {isMistake && (

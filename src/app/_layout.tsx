@@ -8,6 +8,8 @@ import migrations from "../../drizzle/migrations";
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
 
+  console.log("app/_layout");
+
   if (error) {
     return (
       <View>
@@ -19,7 +21,7 @@ export default function Layout() {
   return (
     <SQLiteProvider databaseName={DB_NAME}>
       <StatusBar barStyle={"light-content"} />
-      <Slot />
+      <Slot initialRouteName="(tabs)" />
     </SQLiteProvider>
   );
 }

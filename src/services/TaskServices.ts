@@ -48,11 +48,24 @@ export const TaskService = () => {
     }
 
     try {
-      db.select()
+      const dbResponse = await db
+        .select()
         .from(tasksSchema.tasks)
         .where(eq(tasksSchema.tasks.createdAt, queryDate));
+
+      const response: TaskProps[] = dbResponse.map((task) => ({
+        id: task.id,
+        description: task.description,
+        createdAt: task.createdAt ? new Date(task.createdAt) : null,
+        isMistake: task.isMistake,
+        observation: task.observation,
+        priority: task.priority as TaskPriority | null,
+      }));
+
+      return { data: response };
     } catch (err) {
       console.log(err);
+      return { data: [] };
     }
   }
 

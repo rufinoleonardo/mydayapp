@@ -5,4 +5,6 @@ export enum Colors {
   GRAY_LIGHT = "#e5e6eb",
   GREEN_MEDIUM = "#578b6e",
   RED_MEDIUM = "#f75353",
+  PRIMARY = "#ff025b",
+  DISABLED = "#717171",
 }

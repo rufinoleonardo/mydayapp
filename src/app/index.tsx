@@ -1,5 +1,6 @@
-import Home from "./home";
+import { Redirect } from "expo-router";
 
-export default function App() {
-  return <Home />;
+export default function Index() {
+  console.log("app/index");
+  return <Redirect href={"home"} />;
 }

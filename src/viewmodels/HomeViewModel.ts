@@ -3,22 +3,23 @@ import { TaskProps } from "@/types/TaskProps";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
-// createdAt": 2025-01-22T00:00:00.000Z
-
 export const useHomeViewModel = () => {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const { getAllTasks, deleteTaskById } = TaskService();
+  const { getAllTasks, deleteTaskById, getTasksByDate } = TaskService();
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (dateString?: string) => {
     try {
       setLoading(true);
-      const response = await getAllTasks();
-      setTasks(response.data);
+      const response = await getTasksByDate(dateString);
+      // const response = await getAllTasks();
+      if (response) {
+        setTasks(response.data);
+      }
     } catch (err) {
       Alert.alert("ERROR", "Tasks loading failed.");
     } finally {
@@ -36,5 +37,5 @@ export const useHomeViewModel = () => {
     }
   };
 
-  return { tasks, loading, removeTask };
+  return { tasks, loading, removeTask, fetchTasks };
 };

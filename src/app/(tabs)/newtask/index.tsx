@@ -2,13 +2,13 @@ import { useNewTaskViewModel } from "@/viewmodels/NewTaskViewModel";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "../../components/Button";
-import { Checkbox } from "../../components/CheckBox";
-import { SelectInput } from "../../components/SelectInput";
-import { CustomTextInput } from "../../components/TextInput";
-import { TaskPriority } from "../../enums/TaskPriority";
-import { textContentType } from "../../enums/TextInputType";
-import { globalStyles, textStyles } from "../../styles/globalStyles";
+import { Button } from "../../../components/Button";
+import { Checkbox } from "../../../components/CheckBox";
+import { SelectInput } from "../../../components/SelectInput";
+import { CustomTextInput } from "../../../components/TextInput";
+import { TaskPriority } from "../../../enums/TaskPriority";
+import { textContentType } from "../../../enums/TextInputType";
+import { globalStyles, textStyles } from "../../../styles/globalStyles";
 
 type FormData = {
   description: string;
