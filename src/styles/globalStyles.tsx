@@ -8,6 +8,12 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: Colors.BLUE_DARK,
     padding: 20,
   },
+  rowCentered: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: Sizes.GAP_INPUT,
+  },
 });
 
 export const textStyles = StyleSheet.create({
@@ -52,13 +58,17 @@ export const CommonInputStyles = StyleSheet.create({
   },
   field: {
     paddingHorizontal: 8,
-    height: 50,
+    height: Sizes.PRESSABLE_HEIGHT,
     borderRadius: 8,
     justifyContent: "center",
     marginBottom: 8,
   },
   container: {
     marginBottom: 8,
+  },
+  rowContainer: {
+    marginBottom: 8,
+    flex: 1,
   },
 });
 

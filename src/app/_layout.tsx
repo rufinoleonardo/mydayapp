@@ -1,4 +1,5 @@
 import { db, DB_NAME } from "@/database/initializeDatabase";
+import { Colors } from "@/styles/globalColors";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { Slot } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
@@ -20,7 +21,10 @@ export default function Layout() {
 
   return (
     <SQLiteProvider databaseName={DB_NAME}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar
+        barStyle={"light-content"}
+        backgroundColor={Colors.BLUE_DARK}
+      />
       <Slot initialRouteName="(tabs)" />
     </SQLiteProvider>
   );

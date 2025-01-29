@@ -1,14 +1,14 @@
 import { useNewTaskViewModel } from "@/viewmodels/NewTaskViewModel";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Button } from "../../../components/Button";
 import { Checkbox } from "../../../components/CheckBox";
 import { SelectInput } from "../../../components/SelectInput";
 import { CustomTextInput } from "../../../components/TextInput";
 import { TaskPriority } from "../../../enums/TaskPriority";
 import { textContentType } from "../../../enums/TextInputType";
-import { globalStyles, textStyles } from "../../../styles/globalStyles";
+import { globalStyles } from "../../../styles/globalStyles";
 
 type FormData = {
   description: string;
@@ -35,10 +35,6 @@ const NewTaskScreen: React.FC = () => {
 
   return (
     <View style={globalStyles.pageContainer}>
-      <Text style={[textStyles.h3_subHeading, textStyles.textLight]}>
-        New Task
-      </Text>
-
       <Controller
         name="description"
         control={control}

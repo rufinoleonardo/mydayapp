@@ -11,6 +11,7 @@ interface SelectInputProps {
   placeholder: string;
   selectedValue: String;
   onValueChange: (value: string) => void;
+  isRowDirection?: boolean;
 }
 
 export const SelectInput: React.FC<SelectInputProps> = ({
@@ -19,9 +20,10 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   label,
   selectedValue,
   onValueChange,
+  isRowDirection,
 }) => {
   return (
-    <View style={[Input.container]}>
+    <View style={[isRowDirection ? Input.rowContainer : Input.container]}>
       <Text style={[textStyles.h6_label, textStyles.textLight]}>{label}</Text>
 
       <SelectDropdown

@@ -71,16 +71,15 @@ const Home: React.FC = () => {
 
   return (
     <View style={globalStyles.pageContainer}>
-      <Text style={[textStyles.textLight, textStyles.h2_headline]}>
-        Home page
-      </Text>
-
       <CustomCalendar
         modalVisible={modalVisible}
         onClosePress={() => setModalVisible(false)}
         onSelectDay={handleSelectDate}
       />
 
+      <Text style={[textStyles.h6_label, textStyles.textLight]}>
+        Select a date:
+      </Text>
       <Button
         text={selectedDate}
         onButtonPress={() => setModalVisible(true)}

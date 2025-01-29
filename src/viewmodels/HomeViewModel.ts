@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 export const useHomeViewModel = () => {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const { getAllTasks, deleteTaskById, getTasksByDate } = TaskService();
+  const { deleteTaskById, getTasksByDate } = TaskService();
 
   useEffect(() => {
     fetchTasks();
@@ -16,7 +16,6 @@ export const useHomeViewModel = () => {
     try {
       setLoading(true);
       const response = await getTasksByDate(dateString);
-      // const response = await getAllTasks();
       if (response) {
         setTasks(response.data);
       }
