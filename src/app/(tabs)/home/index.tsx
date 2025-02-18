@@ -1,25 +1,13 @@
-import { Button } from "@/components/Button";
-import { CustomCalendar } from "@/components/Calendar";
-import { ListItem } from "@/components/ListItem";
-import { Colors } from "@/styles/globalColors";
-import { Sizes } from "@/styles/globalSizes";
-import { TaskProps } from "@/types/TaskProps";
+import { useAppSelector } from "@/redux/hooks";
+import { Button } from "@/ui/components/buttons/Button";
+import { CustomCalendar } from "@/ui/components/Calendar";
+import { TasksFlatList } from "@/ui/components/task/FlatListTasks";
+import { colors } from "@/ui/resources/colors";
+import { globalStyles, textStyles } from "@/ui/styles/globalStyles";
 import { useHomeViewModel } from "@/viewmodels/HomeViewModel";
-import { Link } from "expo-router";
-import { useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  ListRenderItemInfo,
-  Text,
-  View,
-} from "react-native";
-import {
-  gButtonsStyles,
-  globalStyles,
-  textStyles,
-} from "../../../styles/globalStyles";
+import React, { useState } from "react";
+import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Home: React.FC = () => {
   const { tasks, loading, removeTask, fetchTasks } = useHomeViewModel();
@@ -28,34 +16,16 @@ const Home: React.FC = () => {
     new Date().toISOString().split("T")[0]
   );
 
-  function renderListItems({ item }: ListRenderItemInfo<TaskProps>) {
-    return (
-      <ListItem
-        description={item.description}
-        isMistake={item.isMistake}
-        priority={item.priority}
-        observation={item.observation}
-        createdAt={item.createdAt}
-        longPressDelete={() => {
-          if (item.id) {
-            handleDelete(item.id);
-          } else {
-            console.log("Elemento sem ID");
-          }
-        }}
-      />
-    );
-  }
+  const { strings } = useAppSelector((state) => state.language);
 
   function handleDelete(id: number) {
-    console.log(`id: ${id.toString()}`);
     Alert.alert(
-      "ATTENTION: Delete action",
-      `Are you sure you want to delete this item? The action can't be undone.`,
+      strings.screen_Home.delModalTitle,
+      strings.screen_Home.delModalDesc,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: strings.screen_Home.delModalCancel, style: "cancel" },
         {
-          text: "Confirm",
+          text: strings.screen_Home.delModalConfirm,
           onPress: () => removeTask(id),
         },
       ]
@@ -63,14 +33,13 @@ const Home: React.FC = () => {
   }
 
   function handleSelectDate(dateString: string) {
-    console.log(dateString);
     setSelectedDate(dateString);
     fetchTasks(dateString);
     setModalVisible(false);
   }
 
   return (
-    <View style={globalStyles.pageContainer}>
+    <SafeAreaView style={globalStyles.pageContainer}>
       <CustomCalendar
         modalVisible={modalVisible}
         onClosePress={() => setModalVisible(false)}
@@ -78,49 +47,49 @@ const Home: React.FC = () => {
       />
 
       <Text style={[textStyles.h6_label, textStyles.textLight]}>
-        Select a date:
+        {strings.screen_Home.dateLabel}
       </Text>
       <Button
         text={selectedDate}
         onButtonPress={() => setModalVisible(true)}
         iconName="calendar"
         background="transparent"
-        color={Colors.GRAY_LIGHT}
+        color={colors.night.LIGHT}
       />
 
       {tasks.length ? (
         loading ? (
           <ActivityIndicator size={"large"} />
         ) : (
-          <FlatList
-            data={tasks}
-            renderItem={renderListItems}
-            keyExtractor={(item) => (item.id ? item.id.toString() : "no-id")}
-          />
+          <View style={{ flex: 1 }}>
+            <Text style={[textStyles.textLight, textStyles.h4_title]}>
+              {strings.screen_Home.resultTitle} {selectedDate}
+            </Text>
+
+            <TasksFlatList tasks={tasks} longPressDelete={console.log} />
+          </View>
         )
       ) : (
-        <View>
+        <View style={{ flex: 1 }}>
           <Text
             style={[
               textStyles.h3_subHeading,
               textStyles.textLight,
-              { textAlign: "center", fontStyle: "italic" },
+              {
+                textAlign: "center",
+                fontStyle: "italic",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                textAlignVertical: "center",
+              },
             ]}
           >
-            {" "}
-            No registers yet.
+            {strings.screen_Home.noRegisters}
           </Text>
-          <Link
-            href={"/newtask"}
-            style={{ marginBottom: Sizes.MARGIN_BETWEEN_SM }}
-          >
-            <View style={[gButtonsStyles.successLg]}>
-              <Text style={textStyles.textLight}>Criar tarefa</Text>
-            </View>
-          </Link>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

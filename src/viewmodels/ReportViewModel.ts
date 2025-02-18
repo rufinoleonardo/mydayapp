@@ -1,6 +1,7 @@
-import { TaskService } from "@/services/TaskServices";
-import { TaskProps } from "@/types/TaskProps";
+import { useTaskRepository } from "@/data/repositories/TaskRepository";
+import { TaskProps } from "@/data/types/TaskProps";
 import { useEffect, useState } from "react";
+import { Alert } from "react-native";
 
 export const useReportViewModel = () => {
   const [nMistakes, setNMistakes] = useState(0);
@@ -8,9 +9,9 @@ export const useReportViewModel = () => {
   const [nMonthlyTasks, setNMontlyTasks] = useState(0);
 
   const [tasks, setTasks] = useState<TaskProps[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  const { countTasksByMonth, getTasksByMonth } = TaskService();
+  const { countTasksByMonth, getTasksByMonth, deleteTaskById } =
+    useTaskRepository();
   const currentMonth = new Date().getMonth() + 1;
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export const useReportViewModel = () => {
   async function countMistakes(month?: string, year: string = "2025") {
     let searchMonth = month || currentMonth;
 
-    let response = await countTasksByMonth(String(searchMonth), year, true);
+    let response = await countTasksByMonth(String(searchMonth), year);
 
     setNMistakes(response);
   }
@@ -30,7 +31,7 @@ export const useReportViewModel = () => {
   async function countRegularTasks(month?: string, year: string = "2025") {
     let searchMonth = month || currentMonth;
 
-    let response = await countTasksByMonth(String(searchMonth), year, false);
+    let response = await countTasksByMonth(String(searchMonth), year);
 
     setNRegularTasks(response);
   }
@@ -43,12 +44,8 @@ export const useReportViewModel = () => {
     setNMontlyTasks(response);
   }
 
-  async function loadTasks(
-    month: string,
-    year: string = "2025",
-    isMistake?: boolean
-  ) {
-    const result = await getTasksByMonth(month, year, isMistake);
+  async function loadTasks(month: string, year: string = "2025") {
+    const result = await getTasksByMonth(month, year);
     setTasks(result.data);
   }
 
@@ -58,6 +55,16 @@ export const useReportViewModel = () => {
     countRegularTasks(month, year);
   }
 
+  const removeTask = async (id: number) => {
+    try {
+      await deleteTaskById(id);
+      setTasks((prev) => prev.filter((task) => task.id != id));
+      Alert.alert("Success", "Task deleted.");
+    } catch (err) {
+      Alert.alert("Error", "Tasks not deleted. Try again.");
+    }
+  };
+
   return {
     nMistakes,
     nRegularTasks,
@@ -65,5 +72,6 @@ export const useReportViewModel = () => {
     researchData,
     tasks,
     loadTasks,
+    removeTask,
   };
 };

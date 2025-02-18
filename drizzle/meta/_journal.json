@@ -15,6 +15,34 @@
       "when": 1737487877788,
       "tag": "0001_eminent_banshee",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1738875206412,
+      "tag": "0002_gigantic_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1738961295226,
+      "tag": "0003_tidy_xorn",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1738965850747,
+      "tag": "0004_sweet_slapstick",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1738967947885,
+      "tag": "0005_silly_salo",
+      "breakpoints": true
     }
   ]
 }

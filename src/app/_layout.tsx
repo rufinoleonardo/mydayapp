@@ -1,15 +1,16 @@
-import { db, DB_NAME } from "@/database/initializeDatabase";
-import { Colors } from "@/styles/globalColors";
+import { db, DB_NAME } from "@/data/database/initializeDatabase";
+import store from "@/redux/store";
+import { AppHeader } from "@/ui/components/AppHeader";
+import { colors } from "@/ui/resources/colors";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { Slot } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import { StatusBar, Text, View } from "react-native";
+import { Provider } from "react-redux";
 import migrations from "../../drizzle/migrations";
 
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
-
-  console.log("app/_layout");
 
   if (error) {
     return (
@@ -21,11 +22,14 @@ export default function Layout() {
 
   return (
     <SQLiteProvider databaseName={DB_NAME}>
-      <StatusBar
-        barStyle={"light-content"}
-        backgroundColor={Colors.BLUE_DARK}
-      />
-      <Slot initialRouteName="(tabs)" />
+      <Provider store={store}>
+        <StatusBar
+          barStyle={"light-content"}
+          backgroundColor={colors.night.DARK}
+        />
+        <AppHeader />
+        <Slot initialRouteName="(tabs)" />
+      </Provider>
     </SQLiteProvider>
   );
 }

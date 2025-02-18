@@ -1,25 +1,31 @@
-import { Colors } from "@/styles/globalColors";
-import { Sizes } from "@/styles/globalSizes";
+import { useAppSelector } from "@/redux/hooks";
+import { appIcons } from "@/ui/resources/icons";
+import { gStyles } from "@/ui/styles/globalStyles";
 import Entypo from "@expo/vector-icons/Entypo";
+import Foundation from "@expo/vector-icons/Foundation";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { ScreenProps, Tabs } from "expo-router";
+import { ScreenProps, Tabs, useRouter } from "expo-router";
 
 export default function Layout() {
+  const { strings } = useAppSelector((state) => state.language);
+  const router = useRouter();
+
   return (
     <Tabs initialRouteName="home/index">
       <Tabs.Screen
         name="report/index"
         options={{
-          title: "Report",
-          headerStyle: {
-            backgroundColor: Colors.BLUE_DARK,
-          },
-          headerTitleStyle: {
-            color: Colors.GRAY_LIGHT,
-            fontSize: Sizes.TEXT_H1,
-          },
+          title: strings.general_TabBar.report,
+          headerStyle: gStyles.tab.headerStyle,
+          headerTitleStyle: gStyles.tab.headerTitleStyle,
           tabBarIcon: ({ focused, color, size }) => {
-            return <MaterialIcons name="description" size={24} color={color} />;
+            return (
+              <MaterialIcons
+                name={appIcons.materialcons.report}
+                size={24}
+                color={color}
+              />
+            );
           },
         }}
       />
@@ -27,33 +33,38 @@ export default function Layout() {
       <Tabs.Screen
         name="home/index"
         options={{
-          title: "Home",
-          headerStyle: {
-            backgroundColor: Colors.BLUE_DARK,
-          },
-          headerTitleStyle: {
-            color: Colors.GRAY_LIGHT,
-            fontSize: Sizes.TEXT_H1,
-          },
+          title: strings.general_TabBar.home,
+          headerStyle: gStyles.tab.headerStyle,
+          headerTitleStyle: gStyles.tab.headerTitleStyle,
           tabBarIcon: ({ focused, color, size }) => {
-            return <Entypo name="home" size={24} color={color} />;
+            return (
+              <Entypo name={appIcons.entypo.home} size={24} color={color} />
+            );
           },
         }}
       />
 
       <Tabs.Screen
-        name="newtask/index"
+        name="target"
         options={{
-          title: "New Task",
-          headerStyle: {
-            backgroundColor: Colors.BLUE_DARK,
+          title: strings.screen_Targets.title,
+          headerStyle: gStyles.tab.headerStyle,
+          headerTitleStyle: gStyles.tab.headerTitleStyle,
+          tabBarIcon: ({ color, focused, size }) => {
+            return (
+              <Foundation
+                name={appIcons.foundation.target}
+                size={28}
+                color={color}
+              />
+            );
           },
-          headerTitleStyle: {
-            color: Colors.GRAY_LIGHT,
-            fontSize: Sizes.TEXT_H1,
-          },
-          tabBarIcon: ({ focused, color, size }) => {
-            return <MaterialIcons name="add-task" size={24} color={color} />;
+        }}
+        listeners={{
+          tabPress: (e) => {
+            // Redireciona para a rota index ao clicar no ícone da TabBar
+            e.preventDefault();
+            router.replace("/target");
           },
         }}
       />

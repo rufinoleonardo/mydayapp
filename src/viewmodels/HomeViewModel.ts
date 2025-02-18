@@ -1,12 +1,12 @@
-import { TaskService } from "@/services/TaskServices";
-import { TaskProps } from "@/types/TaskProps";
+import { useTaskRepository } from "@/data/repositories/TaskRepository";
+import { TaskProps } from "@/data/types/TaskProps";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 export const useHomeViewModel = () => {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const { deleteTaskById, getTasksByDate } = TaskService();
+  const { safeDeleteTaskById, getTasksByDate } = useTaskRepository();
 
   useEffect(() => {
     fetchTasks();
@@ -28,7 +28,7 @@ export const useHomeViewModel = () => {
 
   const removeTask = async (id: number) => {
     try {
-      await deleteTaskById(id);
+      await safeDeleteTaskById(id);
       setTasks((prev) => prev.filter((task) => task.id != id));
       Alert.alert("Success", "Task deleted.");
     } catch (err) {

@@ -1,22 +1,27 @@
-import { Card } from "@/components/Card";
-import { SelectInput } from "@/components/SelectInput";
-import { Colors } from "@/styles/globalColors";
+import { useAppSelector } from "@/redux/hooks";
+import { Card } from "@/ui/components/CardCount";
+import { SelectInput } from "@/ui/components/inputs/SelectInput";
+import { TasksFlatList } from "@/ui/components/task/FlatListTasks";
+import { colors } from "@/ui/resources/colors";
 import {
   CommonInputStyles,
   globalStyles,
   textStyles,
-} from "@/styles/globalStyles";
+} from "@/ui/styles/globalStyles";
 import { useReportViewModel } from "@/viewmodels/ReportViewModel";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ReportScreen = () => {
+  const { strings } = useAppSelector((state) => state.language);
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [month, setMonth] = useState((new Date().getMonth() + 1).toString());
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
+  const [resultTitle, setResultTitle] = useState(
+    `${strings.screen_Report.resultsTitle} ${month}.${year}`
+  );
   const {
     nMistakes,
     nRegularTasks,
@@ -24,21 +29,39 @@ const ReportScreen = () => {
     researchData,
     loadTasks,
     tasks,
+    removeTask,
   } = useReportViewModel();
 
+  function handleDelete(id: string) {
+    Alert.alert(
+      "Deleting task",
+      "Are you sure you want to delete this task? The action can't be undone.",
+      [
+        { style: "cancel", text: "cancel" },
+        {
+          text: "delete",
+          onPress: () => {
+            removeTask(Number(id));
+            researchData();
+          },
+        },
+      ]
+    );
+  }
+
   return (
-    <View style={globalStyles.pageContainer}>
+    <SafeAreaView style={globalStyles.pageContainer}>
       <View style={globalStyles.rowCentered}>
         <SelectInput
-          label="Year"
-          placeholder="select year"
+          label={strings.screen_Report.yearLabel}
+          placeholder={strings.screen_Report.yearPlaceholder}
           dataList={["2025"]}
           selectedValue={year}
           onValueChange={setYear}
           isRowDirection={true}
         />
         <SelectInput
-          label="Month"
+          label={strings.screen_Report.monthLabel}
           onValueChange={setMonth}
           selectedValue={month}
           dataList={[
@@ -59,11 +82,16 @@ const ReportScreen = () => {
           isRowDirection={true}
         />
         <TouchableOpacity
-          onPress={() => researchData(month, year)}
+          onPress={() => {
+            researchData(month, year);
+            setResultTitle(
+              `${strings.screen_Report.resultsTitle} ${month}.${year}`
+            );
+          }}
           style={[
             CommonInputStyles.field,
             {
-              backgroundColor: Colors.PRIMARY,
+              backgroundColor: colors.night.SECONDARY,
               alignSelf: "center",
               marginTop: 10,
             },
@@ -78,7 +106,7 @@ const ReportScreen = () => {
       </View>
 
       <Text style={[textStyles.textLight, textStyles.h4_title]}>
-        Results for {month}.{year}
+        {resultTitle}
       </Text>
 
       <View
@@ -89,34 +117,52 @@ const ReportScreen = () => {
         }}
       >
         <Card
-          label="Montly Tasks"
+          label={strings.screen_Report.montlyTasksLabel}
           countValue={nMonthlyTasks}
           isTextLight={false}
-          onPressCard={() => loadTasks(month, year)}
+          onPressCard={() => {
+            loadTasks(month, year);
+            setSelectedCategory(
+              `${strings.screen_Report.listTitle} ${strings.screen_Report.montlyTasksLabel}`
+            );
+          }}
         />
         <Card
-          label="Mistakes"
+          label={strings.screen_Report.mistakesLabel}
           countValue={nMistakes}
           color={"#e9a7a7"}
           isTextLight={false}
-          onPressCard={() => loadTasks(month, year, true)}
+          onPressCard={() => {
+            loadTasks(month, year);
+            setSelectedCategory(
+              `${strings.screen_Report.listTitle} ${strings.screen_Report.mistakesLabel}`
+            );
+          }}
         />
         <Card
-          label="Regular Tasks"
+          label={strings.screen_Report.regularTasksLabel}
           countValue={nRegularTasks}
-          color={Colors.BLUE_LIGHT}
+          color={colors.night.SECONDARY}
           isTextLight={false}
-          onPressCard={() => loadTasks(month, year, false)}
+          onPressCard={() => {
+            loadTasks(month, year);
+            setSelectedCategory(
+              `${strings.screen_Report.listTitle} ${strings.screen_Report.regularTasksLabel}`
+            );
+          }}
         />
       </View>
 
-      {tasks.length &&
-        tasks.map((task) => (
-          <Text style={textStyles.textLight} key={task.id}>
-            {task.description} - Exibir na recycler view
+      {tasks.length > 0 && (
+        <View style={{ flex: 1 }}>
+          <Text style={[textStyles.textLight, textStyles.h4_title]}>
+            {selectedCategory}
           </Text>
-        ))}
-    </View>
+
+          <TasksFlatList tasks={tasks} longPressDelete={console.log} />
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
 

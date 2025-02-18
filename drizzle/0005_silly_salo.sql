@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `targets_title_unique` ON `targets` (`title`);

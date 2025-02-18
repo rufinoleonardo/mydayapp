@@ -1,28 +1,60 @@
-import { ErrorMessages } from "@/exceptions/ErrorMessages";
-import { TaskService } from "@/services/TaskServices";
-import { TaskProps } from "@/types/TaskProps";
+import { useMistakeRepository } from "@/data/repositories/MistakeRepository";
+import { useTaskRepository } from "@/data/repositories/TaskRepository";
+import { MistakeProps } from "@/data/types/MistakeProps";
+import { TaskInsertionProps, TaskProps } from "@/data/types/TaskProps";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 
-interface getAllTasksResponse {
-  data: TaskProps[];
-}
-
 export const useNewTaskViewModel = () => {
-  const { createTask } = TaskService();
+  const { createTask } = useTaskRepository();
+  const { createMistake } = useMistakeRepository();
   const router = useRouter();
 
-  async function addTask(task: TaskProps) {
+  function isTask(task: TaskProps | MistakeProps): task is TaskProps {
+    return (task as TaskProps).priority !== undefined;
+  }
+
+  function navigateToTarget(targetIdParam: number | string) {
+    router.navigate(`target/details/${targetIdParam}`);
+  }
+
+  async function addTask(
+    task: TaskInsertionProps,
+    targetIdParam: string | number,
+    daysToCompletion: string | number
+  ) {
+    const preparedTask: TaskInsertionProps = {
+      description: task.description,
+      priority: task.priority,
+      targetId: Number(targetIdParam),
+      daysToCompletion: Number(daysToCompletion),
+    };
+
     try {
-      await createTask(task);
-      router.navigate("/");
+      await createTask(preparedTask);
+      navigateToTarget(Number(targetIdParam));
     } catch (err) {
-      console.log(
-        ErrorMessages.returnDbError(ErrorMessages.db, "insert", "tasks")
-      );
       Alert.alert("Error", "Task not added.");
     }
   }
 
-  return { addTask };
+  async function addMistake(
+    mistake: Omit<MistakeProps, "targetId">,
+    targetId: string | number
+  ) {
+    try {
+      const preparedMistake: MistakeProps = {
+        description: mistake.description,
+        observation: mistake.observation,
+        targetId: Number(targetId),
+      };
+      await createMistake(preparedMistake);
+      navigateToTarget(targetId);
+    } catch (err) {
+      Alert.alert("Error", "Mistake not added.");
+      console.log(err);
+    }
+  }
+
+  return { addTask, addMistake, isTask };
 };
