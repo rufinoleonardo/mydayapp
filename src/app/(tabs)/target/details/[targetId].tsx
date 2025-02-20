@@ -1,23 +1,24 @@
 import { TaskProps } from "@/data/types/TaskProps";
-import { TargetCard } from "@/ui/components/CardTarget";
 import { FloatActionButton } from "@/ui/components/buttons/FloatActionButton";
+import { TargetCard } from "@/ui/components/target/CardTarget";
 import { TasksFlatList } from "@/ui/components/task/FlatListTasks";
 import { TasksFilter } from "@/ui/components/task/TasksFilter";
 import { globalStyles } from "@/ui/styles/globalStyles";
+import { filterTasks } from "@/utils/filterTasks";
 import { selectBackgroundColor } from "@/utils/selectBackgroundColors";
 import { useTargetDetailsViewModel } from "@/viewmodels/target/TargetDetailsViewModel";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 export default function Details() {
   const { targetId } = useLocalSearchParams();
-  const { targetData, tasks, filterTasks, isLoading, removeTask } =
+  const { targetData, tasks, isLoading, removeTask } =
     useTargetDetailsViewModel();
   const [filteredTasks, setFilteredTasks] = useState<TaskProps[]>(tasks);
-  const [selectedFilter, setSelectedFilter] = useState<
-    "all" | "completed" | "to do"
-  >("all");
+  const [selectedFilter, setSelectedFilter] = useState<"completed" | "to do">(
+    "to do"
+  );
 
   const router = useRouter();
 
@@ -33,7 +34,7 @@ export default function Details() {
     });
   }
 
-  function handleFilter(filter: "all" | "completed" | "to do") {
+  function handleFilter(filter: "completed" | "to do") {
     setSelectedFilter(filter);
     const filtered = filterTasks(filter, filteredTasks);
     setFilteredTasks(filtered);
@@ -53,6 +54,10 @@ export default function Details() {
     setFilteredTasks(updatedTasks);
   };
 
+  function handleDeleteTarget(id: number) {
+    router.replace("/target");
+  }
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -65,9 +70,11 @@ export default function Details() {
           onCardPress={() => ""}
           color={selectBackgroundColor(targetData.id)}
           target={targetData}
+          id={targetData.id}
+          onTargetLongPress={handleDeleteTarget}
         />
       ) : (
-        <Text>Target Details</Text>
+        <ActivityIndicator size={"large"} />
       )}
 
       <TasksFilter

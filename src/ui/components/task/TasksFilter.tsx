@@ -2,7 +2,7 @@ import { colors } from "@/ui/resources/colors";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface TaskFilterProps {
-  onFilterPress: (filter: "all" | "completed" | "to do") => void;
+  onFilterPress: (filter: "completed" | "to do") => void;
   selectedFilter: string;
 }
 
@@ -15,12 +15,13 @@ export const TasksFilter: React.FC<TaskFilterProps> = ({
       <Pressable
         style={[
           styles.filterTagContainer,
-          selectedFilter == "all" ? styles.selectedTag : {},
+          selectedFilter == "to do" ? styles.selectedTag : {},
         ]}
-        onPress={() => onFilterPress("all")}
+        onPress={() => onFilterPress("to do")}
       >
-        <Text style={styles.tagText}>All</Text>
+        <Text style={styles.tagText}>To do</Text>
       </Pressable>
+
       <Pressable
         style={[
           styles.filterTagContainer,
@@ -29,15 +30,6 @@ export const TasksFilter: React.FC<TaskFilterProps> = ({
         onPress={() => onFilterPress("completed")}
       >
         <Text style={styles.tagText}>Completed</Text>
-      </Pressable>
-      <Pressable
-        style={[
-          styles.filterTagContainer,
-          selectedFilter == "to do" ? styles.selectedTag : {},
-        ]}
-        onPress={() => onFilterPress("to do")}
-      >
-        <Text style={styles.tagText}>To do</Text>
       </Pressable>
     </View>
   );

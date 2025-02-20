@@ -1,10 +1,13 @@
 import { colors } from "@/ui/resources/colors";
 import { appIcons } from "@/ui/resources/icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Link } from "expo-router";
+import { Link, usePathname } from "expo-router";
 import { Image, View } from "react-native";
 
 export const AppHeader: React.FC = () => {
+  const pageName = usePathname();
+
   return (
     <View
       style={{
@@ -27,9 +30,15 @@ export const AppHeader: React.FC = () => {
         }}
       />
 
-      <Link href="/about" asChild>
-        <Entypo name={appIcons.entypo.info} size={28} color="white" />
-      </Link>
+      {pageName === "/about" ? (
+        <Link href="/home" asChild>
+          <AntDesign name={appIcons.antDesign.close} size={28} color="white" />
+        </Link>
+      ) : (
+        <Link href="/about" asChild>
+          <Entypo name={appIcons.entypo.info} size={28} color="white" />
+        </Link>
+      )}
     </View>
   );
 };

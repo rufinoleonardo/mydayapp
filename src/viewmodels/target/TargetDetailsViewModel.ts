@@ -2,7 +2,6 @@ import { useTargetRepository } from "@/data/repositories/TargetRepository";
 import { useTaskRepository } from "@/data/repositories/TaskRepository";
 import { TargetProps } from "@/data/types/TargetProps";
 import { TaskProps } from "@/data/types/TaskProps";
-import { compareDbDateWithToday } from "@/utils/compareDbDateWithToday";
 import { convertTargetFromDb } from "@/utils/convertTargetFromDb";
 import { convertTaskFromDb } from "@/utils/convertTaskFromDb";
 import { useFocusEffect } from "expo-router";
@@ -66,34 +65,10 @@ export const useTargetDetailsViewModel = () => {
     setTasks(updatedTasks);
   }
 
-  function filterTasks(
-    showing: "all" | "completed" | "to do",
-    updatedTasks: TaskProps[]
-  ) {
-    switch (showing) {
-      case "to do":
-        let toDoOnes = updatedTasks.filter(
-          (task) =>
-            task.lastCompletedAt == null ||
-            !compareDbDateWithToday(task.lastCompletedAt)
-        );
-        return toDoOnes;
-      case "completed":
-        let completeOnes = updatedTasks.filter(
-          (task) =>
-            task.lastCompletedAt != null &&
-            compareDbDateWithToday(task.lastCompletedAt)
-        );
-        return completeOnes;
-      default:
-        return tasks;
-    }
-  }
-
   return {
     targetData,
     tasks,
-    filterTasks,
+    //filterTasks,
     handleCompleteTask,
     isLoading,
     removeTask,

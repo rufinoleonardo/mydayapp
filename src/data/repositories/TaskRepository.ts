@@ -14,11 +14,14 @@ export const useTaskRepository = () => {
 
   // * GET FUNCTIONALITIES
 
-  async function getAllTasks(): Promise<getAllTasksResponse> {
+  async function getAllTasks(
+    isActive: boolean = true
+  ): Promise<getAllTasksResponse> {
     try {
       const dbResponse = await db
         .select()
         .from(tasksTable)
+        .where(eq(tasksTable.isActive, isActive))
         .orderBy(desc(tasksTable.createdAt));
 
       const response: TaskProps[] = dbResponse.map((task) =>
@@ -42,7 +45,7 @@ export const useTaskRepository = () => {
     return { data: dbResponse[0] };
   }
 
-  async function getTasksByDate(date?: string) {
+  async function getTasksByDate(date?: string, isActive: boolean = true) {
     let queryDate = "";
 
     if (date) {
@@ -55,7 +58,12 @@ export const useTaskRepository = () => {
       const dbResponse = await db
         .select()
         .from(tasksTable)
-        .where(eq(tasksTable.createdAt, queryDate));
+        .where(
+          and(
+            eq(tasksTable.createdAt, queryDate),
+            eq(tasksTable.isActive, isActive)
+          )
+        );
 
       const response: TaskProps[] = dbResponse.map((task) =>
         convertTaskFromDb(task)
@@ -68,7 +76,11 @@ export const useTaskRepository = () => {
     }
   }
 
-  async function getTasksByMonth(month: string, year: string = "2025") {
+  async function getTasksByMonth(
+    month: string,
+    year: string = "2025",
+    isActive: boolean = true
+  ) {
     const monthStr = month.padStart(2, "0");
 
     let conditions = [
@@ -80,7 +92,7 @@ export const useTaskRepository = () => {
     const dbResponse = await db
       .select()
       .from(tasksTable)
-      .where(and(...conditions));
+      .where(and(...conditions, eq(tasksTable.isActive, isActive)));
 
     const response: TaskProps[] = dbResponse.map((task) =>
       convertTaskFromDb(task)
@@ -89,12 +101,18 @@ export const useTaskRepository = () => {
     return { data: response };
   }
 
-  async function getTasksByTargetId(targetId: number) {
+  async function getTasksByTargetId(
+    targetId: number,
+    isActive: boolean = true
+  ) {
     const dbResponse = await db
       .select()
       .from(tasksTable)
       .where(
-        and(eq(tasksTable.targetId, targetId), eq(tasksTable.isActive, true))
+        and(
+          eq(tasksTable.targetId, targetId),
+          eq(tasksTable.isActive, isActive)
+        )
       );
 
     return dbResponse;
@@ -102,7 +120,11 @@ export const useTaskRepository = () => {
 
   // * COUNT
 
-  async function countTasksByMonth(month: string, year: string = "2025") {
+  async function countTasksByMonth(
+    month: string,
+    year: string = "2025",
+    isActive: boolean = true
+  ) {
     const monthStr = month.padStart(2, "0");
 
     const conditions = [
@@ -114,7 +136,7 @@ export const useTaskRepository = () => {
     const result = await db
       .select({ total: count() })
       .from(tasksTable)
-      .where(and(...conditions));
+      .where(and(...conditions, eq(tasksTable.isActive, isActive)));
 
     return result[0]?.total || 0;
   }

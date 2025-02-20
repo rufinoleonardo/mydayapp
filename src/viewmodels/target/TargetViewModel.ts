@@ -23,5 +23,5 @@ export const useTargetViewModel = () => {
     if (preparedTargets != undefined) setTargets(preparedTargets);
   }
 
-  return { targets };
+  return { targets, setTargets };
 };

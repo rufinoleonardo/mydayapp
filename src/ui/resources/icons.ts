@@ -1,3 +1,4 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -38,6 +39,11 @@ interface appIconsProps {
   foundation: FoundationIcons;
   fontAwesome5: FontAwesome5Icons;
   fontAwesome: FontAwesomeIcons;
+  antDesign: AntDesignIcons;
+}
+
+interface AntDesignIcons {
+  close: keyof typeof AntDesign.glyphMap;
 }
 
 export const appIcons: appIconsProps = {
@@ -60,5 +66,8 @@ export const appIcons: appIconsProps = {
   },
   fontAwesome5: {
     plus: "plus",
+  },
+  antDesign: {
+    close: "closecircle",
   },
 };

@@ -6,16 +6,16 @@ import { Alert } from "react-native";
 export const useHomeViewModel = () => {
   const [tasks, setTasks] = useState<TaskProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const { safeDeleteTaskById, getTasksByDate } = useTaskRepository();
+  const { safeDeleteTaskById, getAllTasks } = useTaskRepository();
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  const fetchTasks = async (dateString?: string) => {
+  const fetchTasks = async () => {
     try {
       setLoading(true);
-      const response = await getTasksByDate(dateString);
+      const response = await getAllTasks();
       if (response) {
         setTasks(response.data);
       }
@@ -27,13 +27,7 @@ export const useHomeViewModel = () => {
   };
 
   const removeTask = async (id: number) => {
-    try {
-      await safeDeleteTaskById(id);
-      setTasks((prev) => prev.filter((task) => task.id != id));
-      Alert.alert("Success", "Task deleted.");
-    } catch (err) {
-      Alert.alert("Error", "Tasks not deleted. Try again.");
-    }
+    setTasks((prev) => prev.filter((task) => task.id != id));
   };
 
   return { tasks, loading, removeTask, fetchTasks };
