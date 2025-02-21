@@ -5,12 +5,12 @@ import { TasksFilter } from "@/ui/components/task/TasksFilter";
 import { globalStyles, textStyles } from "@/ui/styles/globalStyles";
 import { filterTasks } from "@/utils/filterTasks";
 import { useHomeViewModel } from "@/viewmodels/HomeViewModel";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Home: React.FC = () => {
-  const { tasks, loading, removeTask, fetchTasks } = useHomeViewModel();
+  const { tasks, loading, setTasks, removeTask } = useHomeViewModel();
   const [selectedFilter, setSelectedFilter] = useState<"completed" | "to do">(
     "to do"
   );
@@ -18,10 +18,29 @@ const Home: React.FC = () => {
 
   const { strings } = useAppSelector((state) => state.language);
 
+  useEffect(() => {
+    const filtered = filterTasks(selectedFilter, tasks);
+    setFilteredTasks(filtered);
+  }, [selectedFilter, tasks]);
+
   function handleFilter(filter: "completed" | "to do") {
     setSelectedFilter(filter);
     const filtered = filterTasks(selectedFilter, tasks);
     setFilteredTasks(filtered);
+  }
+
+  function handleCompleteTask(taskId: number) {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, lastCompletedAt: new Date() } : task
+    );
+    setTasks(updatedTasks);
+    setFilteredTasks(updatedTasks);
+  }
+
+  function handleDeleteTaks(taskId: number) {
+    removeTask(taskId);
+    const updatedTasks = tasks.filter((task) => task.id != taskId);
+    setFilteredTasks(updatedTasks);
   }
 
   return (
@@ -38,9 +57,9 @@ const Home: React.FC = () => {
 
             <TasksFlatList
               tasks={filteredTasks != undefined ? filteredTasks : []}
-              listTitle="Tasks"
-              onPressComplete={console.log}
-              onPressDelete={console.log}
+              listTitle="Today Tasks"
+              onPressComplete={handleCompleteTask}
+              onPressDelete={handleDeleteTaks}
             />
           </View>
         )

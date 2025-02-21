@@ -1,6 +1,7 @@
 import { useTaskRepository } from "@/data/repositories/TaskRepository";
 import { TaskProps } from "@/data/types/TaskProps";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 
 export const useHomeViewModel = () => {
@@ -8,9 +9,11 @@ export const useHomeViewModel = () => {
   const [loading, setLoading] = useState(false);
   const { safeDeleteTaskById, getAllTasks } = useTaskRepository();
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchTasks();
+    }, [])
+  );
 
   const fetchTasks = async () => {
     try {
@@ -30,5 +33,5 @@ export const useHomeViewModel = () => {
     setTasks((prev) => prev.filter((task) => task.id != id));
   };
 
-  return { tasks, loading, removeTask, fetchTasks };
+  return { tasks, loading, removeTask, fetchTasks, setTasks };
 };

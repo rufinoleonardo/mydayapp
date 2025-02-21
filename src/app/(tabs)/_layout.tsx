@@ -42,6 +42,12 @@ export default function Layout() {
             );
           },
         }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.replace("/home");
+          },
+        }}
       />
 
       <Tabs.Screen
