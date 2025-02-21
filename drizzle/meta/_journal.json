@@ -43,6 +43,13 @@
       "when": 1738967947885,
       "tag": "0005_silly_salo",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1740169419651,
+      "tag": "0006_living_nebula",
+      "breakpoints": true
     }
   ]
 }

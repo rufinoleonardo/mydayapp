@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/redux/hooks";
 import { Card } from "@/ui/components/CardCount";
 import { SelectInput } from "@/ui/components/inputs/SelectInput";
-import { TasksFlatList } from "@/ui/components/task/FlatListTasks";
 import { colors } from "@/ui/resources/colors";
 import {
   CommonInputStyles,
@@ -152,16 +151,6 @@ const ReportScreen = () => {
           }}
         />
       </View>
-
-      {tasks.length > 0 && (
-        <View style={{ flex: 1 }}>
-          <Text style={[textStyles.textLight, textStyles.h4_title]}>
-            {selectedCategory}
-          </Text>
-
-          <TasksFlatList tasks={tasks} longPressDelete={console.log} />
-        </View>
-      )}
     </SafeAreaView>
   );
 };

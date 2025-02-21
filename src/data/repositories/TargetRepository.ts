@@ -2,9 +2,11 @@ import { db } from "@/data/database/initializeDatabase";
 import * as targetSchema from "@/data/database/schemas/targetSchema";
 import { TargetProps } from "@/data/types/TargetProps";
 import { desc, eq } from "drizzle-orm";
+import { useTaskRepository } from "./TaskRepository";
 
 export const useTargetRepository = () => {
   const targetsTable = targetSchema.Targets;
+  const { safeDeleteTasksByTargetId } = useTaskRepository();
 
   // * CREATE
 
@@ -100,6 +102,8 @@ export const useTargetRepository = () => {
         .update(targetsTable)
         .set({ isActive: false })
         .where(eq(targetsTable.id, targetId));
+
+      await safeDeleteTasksByTargetId(targetId);
     } catch (err) {
       console.log(err);
     }

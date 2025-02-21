@@ -4,6 +4,7 @@ import { TaskInsertionProps, TaskProps } from "@/data/types/TaskProps";
 import { convertDateToString } from "@/utils/convertDateToString";
 import { convertTaskFromDb } from "@/utils/convertTaskFromDb";
 import { and, count, desc, eq, sql } from "drizzle-orm";
+import { useTaskHistoryRepository } from "./TaskHistoryRepository";
 
 interface getAllTasksResponse {
   data: TaskProps[];
@@ -11,6 +12,7 @@ interface getAllTasksResponse {
 
 export const useTaskRepository = () => {
   const tasksTable = tasksSchema.Tasks;
+  const { insertRegister } = useTaskHistoryRepository();
 
   // * GET FUNCTIONALITIES
 
@@ -177,6 +179,13 @@ export const useTaskRepository = () => {
     }
   }
 
+  async function safeDeleteTasksByTargetId(targetId: number) {
+    await db
+      .update(tasksTable)
+      .set({ isActive: false })
+      .where(eq(tasksTable.targetId, targetId));
+  }
+
   async function setTaskAsCompleted(id: number) {
     try {
       const response = await getTaskById(id);
@@ -188,10 +197,15 @@ export const useTaskRepository = () => {
       const newCompletedCount = response.data.completedCount++;
       const newLastCompletedAt = convertDateToString(new Date());
 
-      await db.update(tasksTable).set({
-        completedCount: newCompletedCount,
-        lastCompletedAt: newLastCompletedAt,
-      });
+      await db
+        .update(tasksTable)
+        .set({
+          completedCount: newCompletedCount,
+          lastCompletedAt: newLastCompletedAt,
+        })
+        .where(eq(tasksTable.id, id));
+
+      await insertRegister(id);
 
       return { success: true, newCompletedCount, newLastCompletedAt };
     } catch (err) {
@@ -220,5 +234,6 @@ export const useTaskRepository = () => {
     getTasksByTargetId,
     safeDeleteTaskById,
     setTaskAsCompleted,
+    safeDeleteTasksByTargetId,
   };
 };
