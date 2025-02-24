@@ -19,11 +19,11 @@ export default {
     monthLabel: "Month",
     yearPlaceholder: "Select the year",
     monthPlaceholder: "Select the month",
-    resultsTitle: "Results for",
+    resultsTitle: "Results",
     listTitle: "Showing",
-    montlyTasksLabel: "Montly Registers",
-    mistakesLabel: "Mistakes",
-    regularTasksLabel: "Tasks",
+    label_completedTasks: "Completed Tasks",
+    label_mistakes: "Mistakes",
+    label_completedTargets: "Completed Targets",
   },
   screen_NewTask: {
     descriptionLabel: "Description",
@@ -39,19 +39,16 @@ export default {
   screen_About: {
     title: "About",
     description:
-      "The app aims to record tasks and mistakes made throughout the day. Every completed task has its value, especially if it brings you closer to your ultimate goal. Failures are part of the journey — it's time to make peace with them and listen to what they have to teach you.",
+      "Often, you know where you want to go, and for that, breaking the path into steps is essential. The app Bersaglio (from Italian, meaning 'target') aims to define Goals and Tasks to help achieve them. This is a daily task app based on targets.",
     section0Title: "About the Data",
     section0Desc:
-      "The app's data is stored locally only. The idea is that the app does not need to connect to the internet. In case of deletion, the information is lost.",
+      "App data is stored locally only. The idea is that the app does not need to connect to the internet. In case of deletion, Tasks or Targets are deactivated and cannot be recovered for now.",
     section1Title: "How to use",
     section1Desc:
-      "Designed to function as a diary, tasks should be added as they are completed. The app was not intended to be a ToDo list. New tasks can be added using the 'New Task' icon on the TabBar (the bar located at the bottom of the screen)",
+      "When creating a target, a deadline is defined, which will be used as a parameter for the tasks. Upon completing each task, the task progress bar is updated. The calculation performed is Times Completed / Deadline * 100. As for the Target progress bar, it is updated as the days pass. Stay firm: Repetition leads to perfection.",
     section2Title: "About Reports",
     section2Desc:
-      "The reports were designed to provide a monthly overview. Cards displaying the number of records, errors, and common tasks are shown right below the form. Then, the tasks are rendered.",
-    section3Title: "What to expect from updates",
-    section3Desc:
-      "In future updates, the creation of standard tasks, such as drinking water, walking a certain number of steps, etc., is planned. Updating the app's design is also a possibility.",
+      "The reports were designed to provide a monthly overview. Cards displaying the number of completed Tasks, errors, and achieved Targets are shown just below the form. More data will be added in future updates.",
   },
   screen_Targets: {
     title: "Targets",

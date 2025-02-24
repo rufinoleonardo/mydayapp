@@ -8,4 +8,5 @@ export const Targets = sqliteTable("targets", {
   completed: integer({ mode: "boolean" }).default(false),
   daysToCompletion: integer().default(90),
   isActive: integer({ mode: "boolean" }).default(true),
+  completedAt: text(),
 });

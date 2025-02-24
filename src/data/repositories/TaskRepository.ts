@@ -3,8 +3,8 @@ import * as tasksSchema from "@/data/database/schemas/taskSchema";
 import { TaskInsertionProps, TaskProps } from "@/data/types/TaskProps";
 import { convertDateToString } from "@/utils/convertDateToString";
 import { convertTaskFromDb } from "@/utils/convertTaskFromDb";
-import { and, count, desc, eq, sql } from "drizzle-orm";
-import { useTaskHistoryRepository } from "./TaskHistoryRepository";
+import { and, desc, eq } from "drizzle-orm";
+import { useTaskCompletionRepository } from "./TaskCompletionRepository";
 
 interface getAllTasksResponse {
   data: TaskProps[];
@@ -12,7 +12,7 @@ interface getAllTasksResponse {
 
 export const useTaskRepository = () => {
   const tasksTable = tasksSchema.Tasks;
-  const { insertRegister } = useTaskHistoryRepository();
+  const { insertRegister } = useTaskCompletionRepository();
 
   // * GET FUNCTIONALITIES
 
@@ -78,31 +78,6 @@ export const useTaskRepository = () => {
     }
   }
 
-  async function getTasksByMonth(
-    month: string,
-    year: string = "2025",
-    isActive: boolean = true
-  ) {
-    const monthStr = month.padStart(2, "0");
-
-    let conditions = [
-      sql`strftime('%Y-%m', ${tasksTable.createdAt}) = ${
-        year + "-" + monthStr
-      }`,
-    ];
-
-    const dbResponse = await db
-      .select()
-      .from(tasksTable)
-      .where(and(...conditions, eq(tasksTable.isActive, isActive)));
-
-    const response: TaskProps[] = dbResponse.map((task) =>
-      convertTaskFromDb(task)
-    );
-
-    return { data: response };
-  }
-
   async function getTasksByTargetId(
     targetId: number,
     isActive: boolean = true
@@ -118,29 +93,6 @@ export const useTaskRepository = () => {
       );
 
     return dbResponse;
-  }
-
-  // * COUNT
-
-  async function countTasksByMonth(
-    month: string,
-    year: string = "2025",
-    isActive: boolean = true
-  ) {
-    const monthStr = month.padStart(2, "0");
-
-    const conditions = [
-      sql`strftime('%Y-%m', ${tasksTable.createdAt}) = ${
-        year + "-" + monthStr
-      }`,
-    ];
-
-    const result = await db
-      .select({ total: count() })
-      .from(tasksTable)
-      .where(and(...conditions, eq(tasksTable.isActive, isActive)));
-
-    return result[0]?.total || 0;
   }
 
   // * CREATE
@@ -229,8 +181,6 @@ export const useTaskRepository = () => {
     createTask,
     destroyTaskById,
     getTasksByDate,
-    getTasksByMonth,
-    countTasksByMonth,
     getTasksByTargetId,
     safeDeleteTaskById,
     setTaskAsCompleted,

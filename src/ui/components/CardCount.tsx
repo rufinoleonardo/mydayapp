@@ -23,7 +23,11 @@ export const Card: React.FC<CardProps> = ({
       style={[styles.container, color ? { backgroundColor: color } : {}]}
     >
       <Text
-        style={[textStyles.h6_label, isTextLight ? textStyles.textLight : {}]}
+        style={[
+          textStyles.h6_label,
+          isTextLight ? textStyles.textLight : {},
+          styles.label,
+        ]}
       >
         {label}
       </Text>
@@ -45,14 +49,19 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.night.WARN,
     width: 160,
-    height: 100,
+    height: 112,
     maxWidth: "32%",
-    padding: 8,
+    padding: 16,
     borderRadius: 16,
     justifyContent: "space-between",
     alignItems: "center",
   },
   countValue: {
     textAlign: "center",
+    height: 52,
+  },
+  label: {
+    textAlign: "center",
+    height: 36,
   },
 });

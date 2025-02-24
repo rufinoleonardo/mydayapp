@@ -20,15 +20,17 @@ export const AppHeader: React.FC = () => {
         paddingVertical: 4,
       }}
     >
-      <Image
-        source={require("@/assets/logo_light.png")}
-        style={{
-          height: 50,
-          width: 180,
-          resizeMode: "contain",
-          alignItems: "flex-start",
-        }}
-      />
+      <Link href="/home" asChild>
+        <Image
+          source={require("@/assets/logo_light.png")}
+          style={{
+            height: 50,
+            width: 180,
+            resizeMode: "contain",
+            alignItems: "flex-start",
+          }}
+        />
+      </Link>
 
       {pageName === "/about" ? (
         <Link href="/home" asChild>

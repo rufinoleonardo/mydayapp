@@ -1,77 +1,65 @@
-import { useTaskRepository } from "@/data/repositories/TaskRepository";
+import { useMistakeRepository } from "@/data/repositories/MistakeRepository";
+import { useTargetRepository } from "@/data/repositories/TargetRepository";
+import { useTaskCompletionRepository } from "@/data/repositories/TaskCompletionRepository";
 import { TaskProps } from "@/data/types/TaskProps";
-import { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 
 export const useReportViewModel = () => {
-  const [nMistakes, setNMistakes] = useState(0);
-  const [nRegularTasks, setNRegularTasks] = useState(0);
-  const [nMonthlyTasks, setNMontlyTasks] = useState(0);
+  const { getRegistersByMonth } = useTaskCompletionRepository();
+  const { getMistakesByMonth } = useMistakeRepository();
+  const { getCompletedTargetByMonth } = useTargetRepository();
+
+  const [nMistakes, setNumMistakes] = useState(0);
+  const [nTasks, setNumTasks] = useState(0);
+  const [nTargets, setNumTargets] = useState(0);
+  const [selectedMonth, setSelectedMonth] = useState<string>();
+  const [selectedYear, setSelectedYear] = useState<string>();
+  const [loadingData, setLoadingData] = useState(false);
 
   const [tasks, setTasks] = useState<TaskProps[]>([]);
 
-  const { countTasksByMonth, getTasksByMonth, deleteTaskById } =
-    useTaskRepository();
-  const currentMonth = new Date().getMonth() + 1;
+  useFocusEffect(
+    useCallback(() => {
+      getMonthAndYear();
+    }, [])
+  );
 
-  useEffect(() => {
-    countMonthlyTaks();
-    countMistakes();
-    countRegularTasks();
-  }, []);
-
-  async function countMistakes(month?: string, year: string = "2025") {
-    let searchMonth = month || currentMonth;
-
-    let response = await countTasksByMonth(String(searchMonth), year);
-
-    setNMistakes(response);
-  }
-
-  async function countRegularTasks(month?: string, year: string = "2025") {
-    let searchMonth = month || currentMonth;
-
-    let response = await countTasksByMonth(String(searchMonth), year);
-
-    setNRegularTasks(response);
-  }
-
-  async function countMonthlyTaks(month?: string, year: string = "2025") {
-    let searchMonth = month || currentMonth;
-
-    let response = await countTasksByMonth(String(searchMonth), year);
-
-    setNMontlyTasks(response);
-  }
+  const getMonthAndYear = () => {
+    let todayStr = new Date().toISOString().split("T")[0];
+    const [year, month] = todayStr.split("-");
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    console.log(selectedYear, selectedMonth);
+    return;
+  };
 
   async function loadTasks(month: string, year: string = "2025") {
-    const result = await getTasksByMonth(month, year);
-    setTasks(result.data);
-  }
-
-  async function researchData(month?: string, year?: string) {
-    countMonthlyTaks(month, year);
-    countMistakes(month, year);
-    countRegularTasks(month, year);
-  }
-
-  const removeTask = async (id: number) => {
     try {
-      await deleteTaskById(id);
-      setTasks((prev) => prev.filter((task) => task.id != id));
-      Alert.alert("Success", "Task deleted.");
+      setLoadingData(true);
+      const completedTasks = await getRegistersByMonth(month, year);
+      const madeMistakes = await getMistakesByMonth(month, year);
+      const completedTargets = await getCompletedTargetByMonth(month, year);
+
+      setNumTasks(completedTasks.response.length);
+      setNumMistakes(madeMistakes.length);
+      setNumTargets(completedTargets.length);
     } catch (err) {
-      Alert.alert("Error", "Tasks not deleted. Try again.");
+      console.log("Data fetching error. ", err);
+    } finally {
+      setLoadingData(false);
     }
-  };
+  }
 
   return {
     nMistakes,
-    nRegularTasks,
-    nMonthlyTasks,
-    researchData,
+    nTasks,
+    nTargets,
     tasks,
     loadTasks,
-    removeTask,
+    selectedMonth,
+    selectedYear,
+    setSelectedMonth,
+    setSelectedYear,
   };
 };

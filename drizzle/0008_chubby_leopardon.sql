@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `task_histories_id_unique` ON `task_histories` (`id`);

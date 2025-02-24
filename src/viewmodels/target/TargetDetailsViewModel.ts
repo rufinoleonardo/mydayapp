@@ -68,6 +68,7 @@ export const useTargetDetailsViewModel = () => {
   return {
     targetData,
     tasks,
+    setTasks,
     //filterTasks,
     handleCompleteTask,
     isLoading,

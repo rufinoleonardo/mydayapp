@@ -13,7 +13,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 export default function Details() {
   const { targetId } = useLocalSearchParams();
-  const { targetData, tasks, isLoading, removeTask } =
+  const { targetData, tasks, isLoading, removeTask, setTasks } =
     useTargetDetailsViewModel();
   const [filteredTasks, setFilteredTasks] = useState<TaskProps[]>(tasks);
   const [selectedFilter, setSelectedFilter] = useState<"completed" | "to do">(
@@ -44,6 +44,7 @@ export default function Details() {
     const updatedTasks = tasks.map((task) =>
       task.id === taskId ? { ...task, lastCompletedAt: new Date() } : task
     );
+    setTasks(updatedTasks);
     filterTasks(selectedFilter, updatedTasks); // Atualiza o estado no viewModel
     setFilteredTasks(updatedTasks);
   };

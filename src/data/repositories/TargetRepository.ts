@@ -1,7 +1,7 @@
 import { db } from "@/data/database/initializeDatabase";
 import * as targetSchema from "@/data/database/schemas/targetSchema";
 import { TargetProps } from "@/data/types/TargetProps";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { useTaskRepository } from "./TaskRepository";
 
 export const useTargetRepository = () => {
@@ -58,6 +58,26 @@ export const useTargetRepository = () => {
     }
   }
 
+  async function getCompletedTargetByMonth(
+    month: string,
+    year: string = "2025"
+  ) {
+    const monthStr = month.padStart(2, "0");
+
+    let conditions = [
+      sql`strftime('%Y-%m', ${targetsTable.completedAt}) = ${
+        year + "-" + monthStr
+      }`,
+    ];
+
+    const dbResponse = await db
+      .select()
+      .from(targetsTable)
+      .where(and(...conditions));
+
+    return dbResponse;
+  }
+
   // * UPDATE
 
   async function toggleActivateTarget(targetId: number) {
@@ -87,10 +107,14 @@ export const useTargetRepository = () => {
         return { success: false };
       }
 
+      const today = new Date().toISOString().split("T")[0];
+
       const response = await db
         .update(targetsTable)
-        .set({ completed: true })
+        .set({ completed: true, completedAt: today })
         .where(eq(targetsTable.id, targetId));
+
+      return { success: true };
     } catch (err) {
       console.log(err);
     }
@@ -116,5 +140,6 @@ export const useTargetRepository = () => {
     setTargetAsCompleted,
     getTargetById,
     safeDeleteTarget,
+    getCompletedTargetByMonth,
   };
 };
