@@ -69,11 +69,6 @@ export default function AboutScreen() {
           title={strings.screen_About.section2Title}
           description={strings.screen_About.section2Desc}
         />
-
-        <AboutSection
-          title={strings.screen_About.section3Title}
-          description={strings.screen_About.section3Desc}
-        />
       </ScrollView>
     </View>
   );
@@ -89,6 +84,7 @@ const styles = StyleSheet.create({
   },
   langSelected: {
     backgroundColor: colors.night.SECONDARY,
-    color: "#FFF",
+    color: colors.night.DARK,
+    fontWeight: "500",
   },
 });
